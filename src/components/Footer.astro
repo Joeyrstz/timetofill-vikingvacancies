@@ -1,0 +1,156 @@
+---
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: "Leistungen",
+    links: [
+      { label: "Für Kandidaten", href: "https://www.viking-vacancies.de/kandidaten" },
+      { label: "Für Unternehmen", href: "https://www.viking-vacancies.de/unternehmen" },
+      { label: "Für HR & Partner", href: "https://www.viking-vacancies.de/hr-partner" },
+    ],
+  },
+  {
+    title: "Rechner",
+    links: [
+      { label: "Time-to-Fill berechnen", href: "#rechner" },
+      { label: "Gehaltsrichtwerte NRW", href: "#gehaelter" },
+      { label: "Methodik", href: "#methodik" },
+    ],
+  },
+  {
+    title: "Sonstiges",
+    links: [
+      { label: "Kontakt", href: "https://www.viking-vacancies.de/contact" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/marvin-farke/" },
+      { label: "Linktree", href: "https://linktr.ee/marvin.farke" },
+    ],
+  },
+  {
+    title: "Legales",
+    links: [
+      { label: "Impressum", href: "https://www.viking-vacancies.de/impressum" },
+      { label: "Datenschutzerklärung", href: "https://www.viking-vacancies.de/datenschutz" },
+    ],
+  },
+];
+---
+
+<footer class="footer">
+  <div class="shell">
+    <p class="footer__motto display">
+      Loyalität, Meisterschaft und Klarheit.
+    </p>
+    <p class="footer__mottoSub">
+      Kein Marketing-Slogan, sondern mein strategisches Fundament für jede Vermittlung.
+      Ehrenwort.
+    </p>
+
+    <div class="footer__grid">
+      {
+        columns.map((column) => (
+          <nav class="footer__col" aria-label={column.title}>
+            <p class="footer__colTitle">{column.title}</p>
+            <ul class="footer__links">
+              {column.links.map((link) => (
+                <li>
+                  <a class="footer__link" href={link.href}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <p class="footer__note">
+      Gendern: Aus Gründen der besseren Lesbarkeit verwenden wir bei Personenbezeichnungen und
+      personenbezogenen Hauptwörtern das traditionelle generische Maskulinum. Im Sinne der
+      Gleichbehandlung gelten entsprechende Begriffe grundsätzlich für alle Geschlechter
+      (m/w/d). Die verkürzte Sprachform hat nur redaktionelle Gründe und beinhaltet keine
+      Wertung.
+    </p>
+
+    <p class="footer__note">
+      Die Ergebnisse dieses Rechners sind Modellwerte auf Basis der genannten Annahmen und
+      stellen keine Zusicherung, Preisangabe oder betriebswirtschaftliche Beratung dar.
+    </p>
+
+    <p class="footer__legal">
+      © {year} VikingVacancies · Marvin Farke — Tech-Recruiting in NRW und Remote.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: clamp(3rem, 7vw, 5rem) 2.5rem;
+    background: var(--vv-ink-deep);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .footer__motto {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    color: #fff;
+  }
+
+  .footer__mottoSub {
+    margin-top: 0.75rem;
+    max-width: 46ch;
+    font-size: 0.92rem;
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer__colTitle {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--vv-amber-light);
+  }
+
+  .footer__links {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.9rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .footer__link {
+    font-size: 0.88rem;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.62);
+    transition: color 140ms ease;
+  }
+
+  .footer__link:hover {
+    color: #fff;
+  }
+
+  .footer__note {
+    margin-top: 2rem;
+    max-width: 78ch;
+    font-size: 0.74rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.36);
+  }
+
+  .footer__legal {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+</style>

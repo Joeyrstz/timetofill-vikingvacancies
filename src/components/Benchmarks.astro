@@ -1,0 +1,90 @@
+---
+import { SALARY_BENCHMARKS } from "../scripts/content";
+
+const fmt = new Intl.NumberFormat("de-DE");
+---
+
+<section class="bench section section--haze" id="gehaelter">
+  <div class="shell">
+    <div class="bench__head">
+      <p class="kicker">Richtwerte</p>
+      <h2 class="display bench__title">Marktübliche Jahresgehälter in NRW</h2>
+      <p class="bench__lead">
+        Bruttojahresgehalt, Vollzeit, Senior-Level ab etwa fünf Jahren Berufserfahrung, Region
+        Köln / Düsseldorf / Bonn. Bandbreiten, keine Zusicherung — Branche, Unternehmensgröße
+        und Tech-Stack verschieben die Spanne spürbar.
+      </p>
+    </div>
+
+    <ul class="bench__list">
+      {
+        SALARY_BENCHMARKS.map((entry) => (
+          <li class="bench__row">
+            <span class="bench__role">{entry.role}</span>
+            <span class="bench__range">
+              {fmt.format(entry.from)} – {fmt.format(entry.to)} €
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .bench__head {
+    max-width: 620px;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .bench__title {
+    margin-top: 1rem;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    color: var(--vv-ink);
+  }
+
+  .bench__lead {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--vv-text-muted);
+  }
+
+  .bench__list {
+    list-style: none;
+    padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+    margin: 0;
+    columns: 2;
+    column-gap: clamp(2rem, 5vw, 4rem);
+    border-radius: var(--vv-radius-lg);
+    background: var(--vv-paper);
+    box-shadow: var(--vv-shadow-card);
+  }
+
+  .bench__row {
+    break-inside: avoid;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--vv-line-soft);
+    font-size: 0.9rem;
+  }
+
+  .bench__role {
+    color: var(--vv-text);
+  }
+
+  .bench__range {
+    flex: none;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--vv-amber-deep);
+  }
+
+  @media (max-width: 780px) {
+    .bench__list {
+      columns: 1;
+    }
+  }
+</style>

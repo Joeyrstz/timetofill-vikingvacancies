@@ -1,0 +1,31 @@
+---
+/**
+ * Höhenlinien-Motiv der Marke — dekorative Seekarten-Kontur, wie sie auf
+ * viking-vacancies.de die dunklen Sektionen strukturiert. Die Geometrie liegt
+ * einmalig in <ContourDefs />; hier wird sie nur referenziert.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={["contour", className]}
+  viewBox="0 0 520 420"
+  aria-hidden="true"
+  focusable="false"
+>
+  <use href="#vv-contour" />
+</svg>
+
+<style>
+  .contour {
+    position: absolute;
+    pointer-events: none;
+    color: var(--vv-sea);
+    opacity: 0.22;
+    width: 520px;
+    height: auto;
+  }
+</style>

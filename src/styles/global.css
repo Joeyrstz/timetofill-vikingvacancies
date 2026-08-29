@@ -1,0 +1,235 @@
+/* ==========================================================================
+   VikingVacancies — Design Tokens
+   Abgeleitet aus viking-vacancies.de:
+   Crimson Text (Display/Serif) + Inter (UI/Sans), Bernstein #E69811 auf
+   Tiefsee-Navy #212A36, Pill-Buttons, Höhenlinien-Motiv.
+   ========================================================================== */
+
+:root {
+  /* --- Marke --------------------------------------------------------- */
+  --vv-amber: #e69811;
+  --vv-amber-light: #ffc966;
+  --vv-amber-deep: #7d530b;
+  --vv-amber-wash: #fdf4e4;
+
+  --vv-ink: #212a36; /* Tiefsee-Navy, Sektionshintergrund */
+  --vv-ink-deep: #171e28; /* dunkler für Panels */
+  --vv-ink-soft: #4b5460;
+  --vv-sea: #7d95b5; /* Höhenlinien / Kontur */
+
+  --vv-text: #333333;
+  --vv-text-muted: #6d7683;
+  --vv-line: #d6d6d6;
+  --vv-line-soft: #ebeef2;
+
+  --vv-paper: #ffffff;
+  --vv-paper-soft: #f9f9f9;
+  --vv-haze: #ecf1f7;
+
+  --vv-positive: #2f6b52;
+  --vv-negative: #b5482f;
+
+  /* --- Typografie ---------------------------------------------------- */
+  --vv-serif: "Crimson Text", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --vv-sans: "Inter", "Inter Display", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, sans-serif;
+
+  /* --- Maße ---------------------------------------------------------- */
+  --vv-shell: 1180px;
+  --vv-gutter: clamp(1.25rem, 4vw, 3rem);
+  --vv-radius: 18px;
+  --vv-radius-lg: 26px;
+  --vv-pill: 999px;
+
+  --vv-shadow-card: 0 1px 2px rgba(33, 42, 54, 0.04), 0 12px 32px rgba(33, 42, 54, 0.07);
+  --vv-shadow-deep: 0 24px 60px rgba(23, 30, 40, 0.28);
+}
+
+/* --- Reset ----------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--vv-paper);
+  color: var(--vv-text);
+  font-family: var(--vv-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: -0.011em;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* --- Bausteine -------------------------------------------------------- */
+.shell {
+  width: 100%;
+  max-width: var(--vv-shell);
+  margin-inline: auto;
+  padding-inline: var(--vv-gutter);
+}
+
+/* Serif-Display: Crimson läuft optisch groß, daher negatives Tracking wie
+   auf viking-vacancies.de (dort -1.6px bei 80px ≈ -0.02em). */
+.display {
+  font-family: var(--vv-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.display em {
+  font-style: normal;
+  color: var(--vv-amber);
+}
+
+/* Kicker mit vorangestelltem Strich — Signature-Element der Marke. */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--vv-text-muted);
+}
+
+.kicker::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+  flex: none;
+}
+
+.kicker--center {
+  justify-content: center;
+}
+
+.kicker--onDark {
+  color: var(--vv-amber-light);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.9rem;
+  border: 1px solid transparent;
+  border-radius: var(--vv-pill);
+  background: var(--vv-amber);
+  color: #1c1200;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.btn:hover {
+  background: var(--vv-amber-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(230, 152, 17, 0.32);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+.btn--quiet {
+  background: transparent;
+  border-color: var(--vv-line);
+  color: var(--vv-text);
+}
+
+.btn--quiet:hover {
+  background: var(--vv-paper-soft);
+  border-color: var(--vv-ink-soft);
+  box-shadow: none;
+}
+
+.section {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+.section--ink {
+  background: var(--vv-ink);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.section--haze {
+  background: var(--vv-haze);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:where(a, button, input, summary):focus-visible {
+  outline: 2px solid var(--vv-amber);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

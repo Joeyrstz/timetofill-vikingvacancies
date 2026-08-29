@@ -1,0 +1,131 @@
+---
+import Contour from "./Contour.astro";
+import { TRUST_POINTS } from "../scripts/content";
+---
+
+<section class="trust section section--ink">
+  <Contour class="trust__contour" />
+
+  <div class="shell trust__grid">
+    <div>
+      <p class="kicker kicker--onDark">Dein Navigator</p>
+      <h2 class="display trust__title">
+        Eine Zahl auf dem Bildschirm ändert nichts.<br />
+        <em>Eine besetzte Stelle schon.</em>
+      </h2>
+      <p class="trust__lead">
+        Ich bin Marvin Farke. Recruiting ist heute oft wie eine Fahrt durch dichten Nebel:
+        unpassende Profile, langwierige Prozesse, am Ende steht die Stelle noch immer offen.
+        Ich habe VikingVacancies gegründet, um den Kurs neu zu setzen — mit technischem
+        Verständnis statt CV-Forwarding und mit Verbindlichkeit statt Ghosting.
+      </p>
+      <p class="trust__quote">
+        „Schnell und fachlich passend schließen sich nicht aus. Genau darauf ist mein
+        Netzwerk in NRW ausgelegt.“
+      </p>
+      <a class="btn btn--ghost trust__link" href="https://www.linkedin.com/in/marvin-farke/">
+        Auf LinkedIn verbinden
+      </a>
+    </div>
+
+    <ul class="points">
+      {
+        TRUST_POINTS.map((point) => (
+          <li class="points__item">
+            <svg class="points__check" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <path
+                d="M4 10.5 8 14.5 16 5.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span>{point}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trust__contour {
+    left: -200px;
+    top: -80px;
+    opacity: 0.12;
+  }
+
+  .trust__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .trust__title {
+    margin-top: 1.1rem;
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    color: #fff;
+  }
+
+  .trust__lead {
+    margin-top: 1.35rem;
+    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .trust__quote {
+    margin-top: 1.5rem;
+    padding-left: 1.15rem;
+    border-left: 2px solid var(--vv-amber);
+    font-family: var(--vv-serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .trust__link {
+    margin-top: 1.75rem;
+  }
+
+  .points {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .points__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    align-items: start;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.74);
+  }
+
+  .points__item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .points__check {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.15rem;
+    color: var(--vv-amber);
+  }
+
+  @media (max-width: 880px) {
+    .trust__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

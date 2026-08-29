@@ -1,0 +1,70 @@
+---
+import Contour from "./Contour.astro";
+---
+
+<section class="cta section section--ink">
+  <Contour class="cta__contour cta__contour--l" />
+  <Contour class="cta__contour cta__contour--r" />
+
+  <div class="shell cta__inner">
+    <p class="kicker kicker--onDark kicker--center">Kurs setzen</p>
+    <h2 class="display cta__title">
+      Die Vakanz überbrücken, <em>bevor sie teuer wird</em>.
+    </h2>
+    <p class="cta__lead">
+      20 Minuten: eure Situation, eure Optionen, ein ehrliches Marktfeedback. Kostenlos und
+      unverbindlich — und wenn ich nicht der Richtige bin, sage ich das auch.
+    </p>
+    <div class="cta__actions">
+      <a class="btn" href="https://www.viking-vacancies.de/contact">Erstgespräch vereinbaren</a>
+      <a class="btn btn--ghost" href="https://www.viking-vacancies.de/unternehmen">
+        Honorarmodelle ansehen
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta__contour {
+    opacity: 0.13;
+  }
+
+  .cta__contour--l {
+    left: -230px;
+    bottom: -170px;
+  }
+
+  .cta__contour--r {
+    right: -230px;
+    top: -170px;
+    scale: -1 1;
+  }
+
+  .cta__inner {
+    position: relative;
+    max-width: 700px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta__title {
+    margin-top: 1.1rem;
+    font-size: clamp(1.9rem, 4.4vw, 3rem);
+    color: #fff;
+  }
+
+  .cta__lead {
+    margin-top: 1.2rem;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+</style>

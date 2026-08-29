@@ -1,0 +1,121 @@
+---
+import Contour from "./Contour.astro";
+---
+
+<section class="hero">
+  <Contour class="hero__contour hero__contour--left" />
+  <Contour class="hero__contour hero__contour--right" />
+
+  <div class="shell hero__inner">
+    <p class="kicker kicker--onDark">VikingVacancies · Time-to-Fill-Rechner</p>
+
+    <h1 class="display hero__title">
+      Was kostet euch die <em>unbesetzte Stelle</em> wirklich?
+    </h1>
+
+    <p class="hero__lead">
+      Eine offene Schlüsselposition kostet nicht erst, wenn sie besetzt wird — sie kostet
+      jeden Tag, an dem sie offen bleibt. Bewegt die Regler und seht, was eure Vakanz euch
+      wirklich abverlangt und ab welchem Punkt sich eine schnellere Besetzung rechnet.
+    </p>
+
+    <div class="hero__actions">
+      <a class="btn" href="#rechner">Vakanz durchrechnen</a>
+      <a class="btn btn--ghost" href="https://www.viking-vacancies.de/contact">
+        Erstgespräch vereinbaren
+      </a>
+    </div>
+
+    <dl class="hero__stats">
+      <div class="stat">
+        <dt>Für Festanstellungen</dt>
+        <dd>Kein Interimsmodell. Gerechnet wird die dauerhafte Besetzung.</dd>
+      </div>
+      <div class="stat">
+        <dt>Tech &amp; IT in NRW</dt>
+        <dd>Richtwerte für Köln, Düsseldorf und Bonn — Senior-Level.</dd>
+      </div>
+      <div class="stat">
+        <dt>Offengelegte Formel</dt>
+        <dd>Jeder Faktor steht unten in den Anmerkungen. Ehrenwort.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(120% 130% at 50% -20%, #2c3948 0%, var(--vv-ink) 45%, #131a23 100%);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(4rem, 10vw, 8rem);
+    margin-top: -4.5rem;
+    padding-top: 8rem;
+  }
+
+  .hero__contour {
+    top: -60px;
+  }
+
+  .hero__contour--left {
+    left: -190px;
+  }
+
+  .hero__contour--right {
+    right: -210px;
+    top: auto;
+    bottom: -150px;
+    scale: -1 1;
+    opacity: 0.16;
+  }
+
+  .hero__inner {
+    position: relative;
+    max-width: 880px;
+  }
+
+  .hero__title {
+    margin-top: 1.5rem;
+    font-size: clamp(2.6rem, 6.4vw, 4.75rem);
+    color: #fff;
+  }
+
+  .hero__lead {
+    margin-top: 1.5rem;
+    max-width: 60ch;
+    font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2.25rem;
+  }
+
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem 2.5rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .stat dt {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--vv-amber-light);
+  }
+
+  .stat dd {
+    margin-top: 0.4rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.62);
+  }
+</style>

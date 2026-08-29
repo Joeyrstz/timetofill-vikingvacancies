@@ -1,0 +1,78 @@
+---
+import "../styles/global.css";
+import ContourDefs from "../components/ContourDefs.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+/* Astro.url.pathname enthält im Build bereits den konfigurierten `base`-Pfad,
+   die Canonical-URL stimmt also auch unter GitHub Pages. */
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+/* BASE_URL kann mit oder ohne Schrägstrich enden (je nach base-Konfiguration),
+   deshalb hier normalisieren — sonst zeigt das Favicon unter einer Project Site
+   auf /<repo>favicon.svg statt /<repo>/favicon.svg. */
+const asset = (path: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="VikingVacancies" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#212a36" />
+    <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#rechner">Zum Rechner springen</a>
+    <ContourDefs />
+    <slot />
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 50%;
+    translate: -50% -140%;
+    z-index: 100;
+    margin-top: 0.75rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--vv-pill);
+    background: var(--vv-ink);
+    color: #fff;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: translate 180ms ease;
+  }
+
+  .skip:focus-visible {
+    translate: -50% 0;
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+import { FAQ } from "../scripts/content";
+---
+
+<section class="faq section section--haze" id="faq">
+  <div class="shell faq__inner">
+    <p class="kicker">Häufige Fragen</p>
+    <h2 class="display faq__title">Bevor ihr fragt</h2>
+
+    <div class="faq__list">
+      {
+        FAQ.map((item, i) => (
+          <details class="qa" open={i === 0}>
+            <summary class="qa__q">
+              <span>{item.q}</span>
+              <svg class="qa__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path
+                  d="M10 4v12M4 10h12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </summary>
+            <p class="qa__a">{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__inner {
+    max-width: 820px;
+  }
+
+  .faq__title {
+    margin-top: 1rem;
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    color: var(--vv-ink);
+  }
+
+  .faq__list {
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    border-radius: var(--vv-radius-lg);
+    background: var(--vv-paper);
+    box-shadow: var(--vv-shadow-card);
+    overflow: hidden;
+  }
+
+  .qa {
+    padding: 0 clamp(1.1rem, 3vw, 1.9rem);
+  }
+
+  .qa + .qa {
+    border-top: 1px solid var(--vv-line-soft);
+  }
+
+  .qa__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--vv-ink);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .qa__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .qa__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--vv-amber);
+    transition: rotate 200ms ease;
+  }
+
+  .qa[open] .qa__icon {
+    rotate: 45deg;
+  }
+
+  .qa__a {
+    padding-bottom: 1.35rem;
+    max-width: 68ch;
+    font-size: 0.93rem;
+    line-height: 1.68;
+    color: var(--vv-text-muted);
+  }
+</style>

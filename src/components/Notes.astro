@@ -1,0 +1,134 @@
+---
+import {
+  EMPLOYER_COST_FACTOR,
+  WORKDAYS_PER_MONTH,
+  INTERNAL_EFFORT_WITH_AGENCY,
+} from "../scripts/model";
+
+const notes = [
+  {
+    term: "Wertschöpfung",
+    text: `Abgeleitet vom Bruttojahresgehalt nach der Sullivan-Formel aus der Cost-of-Vacancy-Forschung (San Francisco State University): Gehalt × ${EMPLOYER_COST_FACTOR.toLocaleString("de-DE")} für Lohnnebenkosten, multipliziert mit dem Rolleneinfluss (1,8 bis 3,0). Der Vorschlag lässt sich jederzeit überschreiben.`,
+  },
+  {
+    term: "Kritikalität",
+    text: "Legt fest, wie viel der Wertschöpfung bei einer Vakanz überhaupt verloren geht: Planbar 50 %, Spürbar 70 %, Ernst 85 %, Akut 100 %. Der Wert greift nicht ab Tag 1 in voller Höhe — bei kurzer Vakanz federt das Team noch ab, ab Monat 6 wirkt er vollständig.",
+  },
+  {
+    term: "Folgekosten im Team",
+    text: "Anteil des Jahresbruttogehalts als Risiko-Proxy für Überstunden, Qualitätsverlust und Fluktuation: 3 %, 10 %, 20 %, 50 %. Ein einmonatiger Engpass erzeugt selten ein Kündigungsrisiko, ein sechsmonatiger schon eher — deshalb skaliert auch dieser Posten mit der Dauer und erreicht ab Monat 6 die volle Höhe.",
+  },
+  {
+    term: "Einarbeitungskurve",
+    text: "Ein neuer Festangestellter ist am ersten Tag nicht voll produktiv: Monat 1 25 %, Monat 2 45 %, Monat 3 65 %, Monat 4 80 %, Monat 5 90 %, ab Monat 6 100 %. Diese Kurve fällt bewusst flacher aus als bei einem Interimseinsatz — eine Festanstellung übernimmt Domänenwissen, Systemkontext und Verantwortung erst schrittweise. Der Fehlbetrag daraus wird mit derselben Kritikalität gewichtet wie die Vakanz selbst, aber ohne deren Dauer-Eskalation: Ein leerer Stuhl wird mit jedem Monat schlimmer, ein einarbeitender Mitarbeiter mit jedem Monat besser.",
+  },
+  {
+    term: "Gemeinsamer Zeithorizont",
+    text: "Beide Szenarien werden über exakt denselben Zeitraum gerechnet: die Zeit, die die Suche in Eigenregie ohnehin gebraucht hätte. Gemessen wird jeweils der Fehlbetrag gegenüber einer dauerhaft besetzten Stelle. Was nach diesem Fenster passiert, ist in beiden Fällen identisch und bleibt deshalb außen vor.",
+  },
+  {
+    term: "Konservative Annahmen",
+    text: `An drei Stellen rechnet das Modell bewusst gegen die schnelle Besetzung. Erstens trägt nur das Agentur-Szenario die Einarbeitungskosten — im Eigenregie-Szenario fällt dieselbe Einarbeitung auch an, nur später und damit außerhalb des Vergleichsfensters. Zweitens sinkt der interne Recruiting-Aufwand nur auf ${Math.round(INTERNAL_EFFORT_WITH_AGENCY * 100)} %, obwohl Sourcing, Vorauswahl und Terminkoordination vollständig entfallen. Drittens steht das Honorar mit dem vollen Prozentsatz in der Rechnung — ohne Ratenlogik, ohne Abzinsung.`,
+  },
+  {
+    term: "Interner Recruiting-Aufwand",
+    text: "Personentage, die Hiring Manager und Team in Sichtung, Screening, Koordination und Interviews stecken. Näherungsweise mit der Tageswertschöpfung der offenen Position bewertet, weil diese Zeit überwiegend von Kollegen vergleichbarer Seniorität aufgebracht wird.",
+  },
+  {
+    term: "Wenn die Rechnung negativ ausfällt",
+    text: "Das kommt vor und wird hier nicht versteckt. Bei kurzer Time-to-Fill, geringer Kritikalität oder niedrigem Gehalt übersteigt das Honorar den Wert der gewonnenen Monate — dann ist die Suche in Eigenregie schlicht die richtige Entscheidung. Der Rechner sagt das dann auch so.",
+  },
+  {
+    term: "Vollzeit",
+    text: `Die Berechnung geht von einer Vollzeitstelle mit ${WORKDAYS_PER_MONTH} Arbeitstagen je Monat aus. Für Teilzeit sind Gehalt und Wertschöpfung anteilig zu reduzieren.`,
+  },
+  {
+    term: "Was der Rechner nicht kann",
+    text: "Er ist ein Denkwerkzeug, keine Buchhaltung. Fehlbesetzungsrisiko, entgangene Marktchancen und der Effekt auf die Arbeitgebermarke stehen bewusst nicht in der Formel — sie lassen sich seriös nicht pauschal beziffern. In der Praxis verschieben sie das Ergebnis fast immer weiter zugunsten der schnelleren Besetzung.",
+  },
+];
+---
+
+<section class="notes section" id="methodik">
+  <div class="shell notes__grid">
+    <div class="notes__aside">
+      <p class="kicker">Klarheit</p>
+      <h2 class="display notes__title">Anmerkungen zur Berechnung</h2>
+      <p class="notes__lead">
+        Ein Rechner, dessen Formel man nicht kennt, ist ein Verkaufsprospekt. Deshalb steht
+        hier jeder Faktor — inklusive der Stellen, an denen das Modell gegen mich rechnet.
+      </p>
+    </div>
+
+    <dl class="notes__list">
+      {
+        notes.map((note) => (
+          <div class="note">
+            <dt class="note__term">{note.term}</dt>
+            <dd class="note__text">{note.text}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .notes__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: clamp(2rem, 6vw, 4.5rem);
+    align-items: start;
+  }
+
+  .notes__aside {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .notes__title {
+    margin-top: 1rem;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    color: var(--vv-ink);
+  }
+
+  .notes__lead {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--vv-text-muted);
+  }
+
+  .notes__list {
+    margin: 0;
+  }
+
+  .note + .note {
+    margin-top: 1.35rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid var(--vv-line-soft);
+  }
+
+  .note__term {
+    font-size: 0.83rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--vv-amber-deep);
+  }
+
+  .note__text {
+    margin: 0.4rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.68;
+    color: var(--vv-text);
+  }
+
+  @media (max-width: 880px) {
+    .notes__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .notes__aside {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,779 @@
+---
+import Slider from "./Slider.astro";
+import Contour from "./Contour.astro";
+import {
+  calculate,
+  euro,
+  plain,
+  months as fmtMonths,
+  daysDative as fmtDaysDat,
+  suggestedMonthlyValue,
+  IMPACT_FACTORS,
+  FEE_MODELS,
+  VALUE_STEP,
+  type CalculatorInput,
+} from "../scripts/model";
+import {
+  IMPACT_LABELS,
+  IMPACT_HINTS,
+  CRITICALITY_LABELS,
+  CRITICALITY_HINTS,
+  FOLLOWUP_LABELS,
+  FOLLOWUP_HINTS,
+} from "../scripts/content";
+
+/* Startwerte — identisch zu den Defaults im Client-Skript, damit die Seite
+   auch ohne JavaScript eine vollständige, korrekte Rechnung zeigt. */
+const defaults: CalculatorInput = {
+  salary: 75000,
+  impactIndex: 1,
+  monthlyValue: suggestedMonthlyValue(75000, IMPACT_FACTORS[1]),
+  criticalityIndex: 1,
+  followupIndex: 1,
+  monthsSelf: 7,
+  monthsAgency: 2,
+  internalDaysPerMonth: 3,
+  feeIndex: 1,
+};
+
+const r = calculate(defaults);
+---
+
+<section class="calc section" id="rechner" data-calculator>
+  <div class="shell">
+    <div class="calc__intro">
+      <p class="kicker">Der Rechner</p>
+      <h2 class="display calc__title">
+        Acht Regler. Eine Zahl, die <em>weh tut</em>.
+      </h2>
+      <p class="calc__lead">
+        Die Vorbelegung entspricht einer typischen Senior-Entwicklerstelle in NRW. Passt sie
+        an eure Situation an — es wird nichts gespeichert und nichts übertragen.
+      </p>
+    </div>
+
+    <div class="calc__grid">
+      <!-- ============ Eingaben ============ -->
+      <form class="panel" novalidate autocomplete="off" aria-label="Eingaben für die Vakanzberechnung">
+        <fieldset class="group">
+          <legend class="group__legend">01 · Die Position</legend>
+
+          <Slider
+            id="salary"
+            label="Bruttojahresgehalt der Position"
+            min={45000}
+            max={160000}
+            step={1000}
+            value={defaults.salary}
+            display={euro(defaults.salary)}
+            hint="Daraus leiten sich Wertschöpfung und Honorar ab. Richtwerte für NRW findet ihr weiter unten."
+          />
+
+          <Slider
+            id="impact"
+            label="Einfluss der Rolle auf den Produkterfolg"
+            min={1}
+            max={4}
+            step={1}
+            value={defaults.impactIndex + 1}
+            display={IMPACT_LABELS[defaults.impactIndex]}
+            hint={IMPACT_HINTS[defaults.impactIndex]}
+          />
+
+          <Slider
+            id="value"
+            label="Wertschöpfung der Position pro Monat"
+            min={6000}
+            max={70000}
+            step={VALUE_STEP}
+            value={defaults.monthlyValue}
+            display={`~ ${euro(defaults.monthlyValue)}`}
+            hint="Vorschlag nach der Sullivan-Formel aus Gehalt und Rolleneinfluss. Kennt ihr euren Wertbeitrag genauer, überschreibt ihn hier."
+          />
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group__legend">02 · Die Lage im Team</legend>
+
+          <Slider
+            id="criticality"
+            label="Wie kritisch ist die Rolle aktuell?"
+            min={1}
+            max={4}
+            step={1}
+            value={defaults.criticalityIndex + 1}
+            display={CRITICALITY_LABELS[defaults.criticalityIndex]}
+            hint={CRITICALITY_HINTS[defaults.criticalityIndex]}
+          />
+
+          <Slider
+            id="followup"
+            label="Risiko von Folgekosten im Team"
+            min={1}
+            max={4}
+            step={1}
+            value={defaults.followupIndex + 1}
+            display={FOLLOWUP_LABELS[defaults.followupIndex]}
+            hint={FOLLOWUP_HINTS[defaults.followupIndex]}
+          />
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="group__legend">03 · Die Besetzung</legend>
+
+          <Slider
+            id="monthsSelf"
+            label="Time-to-Fill in Eigenregie"
+            min={3}
+            max={12}
+            step={1}
+            value={defaults.monthsSelf}
+            display={fmtMonths(defaults.monthsSelf)}
+            hint="Vom erkannten Bedarf bis zum ersten Arbeitstag — inklusive Freigabe, Ausschreibung, Interviews und Kündigungsfrist."
+          />
+
+          <Slider
+            id="monthsAgency"
+            label="Time-to-Fill mit VikingVacancies"
+            min={1}
+            max={6}
+            step={1}
+            value={defaults.monthsAgency}
+            display={fmtMonths(defaults.monthsAgency)}
+            hint="Erste passgenaue Profile in der Regel innerhalb von 7 Tagen. Der Rest ist Prozess und Kündigungsfrist."
+          />
+
+          <Slider
+            id="internal"
+            label="Interner Recruiting-Aufwand"
+            min={0}
+            max={10}
+            step={1}
+            value={defaults.internalDaysPerMonth}
+            display={`${defaults.internalDaysPerMonth} Personentage / Monat`}
+            hint="Zeit von Hiring Manager und Team für Sichtung, Screening, Koordination und Interviews."
+          />
+
+          <div class="fee">
+            <span class="fee__label" id="feeLabel">Honorarmodell</span>
+            <div class="fee__options" role="radiogroup" aria-labelledby="feeLabel">
+              {
+                FEE_MODELS.map((model, i) => (
+                  <label class:list={["fee__option", i === defaults.feeIndex && "is-active"]}>
+                    <input
+                      type="radio"
+                      name="fee"
+                      value={i}
+                      checked={i === defaults.feeIndex}
+                      class="visually-hidden"
+                    />
+                    <span class="fee__name">{model.name}</span>
+                    <span class="fee__pct">{Math.round(model.percent * 100)} %</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="fee__detail" id="feeDetail">
+              <strong>{FEE_MODELS[defaults.feeIndex].tagline}.</strong>
+              {" "}{FEE_MODELS[defaults.feeIndex].detail}
+            </p>
+          </div>
+        </fieldset>
+      </form>
+
+      <!-- ============ Ergebnis ============ -->
+      <div class="result">
+        <Contour class="result__contour" />
+
+        <div class="result__inner">
+          <p class="result__eyebrow">Kosten der Vakanz — Suche in Eigenregie</p>
+
+          <!-- role="status" statt aria-live auf dem ganzen Panel: Screenreader
+               sollen die Kopfzahl mitbekommen, nicht jede Zeile der Aufschlüsselung. -->
+          <p class="result__figure" id="outTotal" role="status">{euro(r.self.total)}</p>
+          <p class="result__sub">
+            <span id="outPerDay">{euro(r.weightedDailyValue)}</span> pro Arbeitstag, an dem die
+            Stelle offen bleibt
+          </p>
+
+          <dl class="breakdown">
+            <div class="breakdown__row">
+              <dt>Wertschöpfung pro Tag (gewichtet)</dt>
+              <dd id="outDaily">{euro(r.weightedDailyValue)}</dd>
+            </div>
+            <div class="breakdown__row">
+              <dt>× Arbeitstage ohne Besetzung</dt>
+              <dd id="outDays">{plain(r.vacantDaysSelf)}</dd>
+            </div>
+            <div class="breakdown__row">
+              <dt>Folgekosten im Team (Risiko)</dt>
+              <dd id="outFollowup">+ {euro(r.self.followupCost)}</dd>
+            </div>
+            <div class="breakdown__row">
+              <dt>Interner Recruiting-Aufwand</dt>
+              <dd id="outInternal">+ {euro(r.self.internalCost)}</dd>
+            </div>
+          </dl>
+
+          <div class="scenarios">
+            <div class="scenario">
+              <p class="scenario__name">Kurs halten</p>
+              <p class="scenario__figure scenario__figure--negative" id="outSelf">
+                −{euro(r.self.total)}
+              </p>
+              <p class="scenario__desc" id="outSelfDesc">
+                Suche in Eigenregie über {fmtMonths(defaults.monthsSelf)}. Die Stelle bleibt
+                den gesamten Zeitraum unbesetzt.
+              </p>
+            </div>
+
+            <p class="scenarios__vs" aria-hidden="true">vs.</p>
+
+            <div class="scenario">
+              <p class="scenario__name">Kurs korrigieren</p>
+              <p class="scenario__figure scenario__figure--negative" id="outAgency">
+                −{euro(r.agency.total)}
+              </p>
+              <p class="scenario__desc" id="outAgencyDesc">
+                Besetzung nach {fmtMonths(defaults.monthsAgency)}, inklusive Honorar und
+                Einarbeitung — im selben Zeitfenster gerechnet.
+              </p>
+            </div>
+          </div>
+
+          <div class="verdict" id="verdict">
+            <p class="verdict__label" id="verdictLabel">Vorsprung durch schnellere Besetzung</p>
+            <p class="verdict__figure" id="outAdvantage">{euro(r.advantage)}</p>
+            <p class="verdict__note" id="outVerdictNote">
+              Das Honorar von {euro(r.fee)} ist nach {fmtDaysDat(r.breakEvenDays)} früherer
+              Besetzung wieder eingespielt. Danach arbeitet die Stelle für euch.
+            </p>
+          </div>
+
+          <a class="btn result__cta" href="https://www.viking-vacancies.de/contact">
+            Vakanz besprechen
+          </a>
+          <p class="result__fineprint">
+            20 Minuten, kostenlos und unverbindlich. Keine Eingabe verlässt euren Browser.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .calc {
+    background: var(--vv-paper);
+  }
+
+  .calc__intro {
+    max-width: 640px;
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  }
+
+  .calc__title {
+    margin-top: 1rem;
+    font-size: clamp(2rem, 4.2vw, 3.1rem);
+    color: var(--vv-ink);
+  }
+
+  .calc__lead {
+    margin-top: 1.1rem;
+    font-size: 1rem;
+    color: var(--vv-text-muted);
+  }
+
+  .calc__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    gap: 0;
+    border: 1px solid var(--vv-line-soft);
+    border-radius: var(--vv-radius-lg);
+    background: var(--vv-paper);
+    box-shadow: var(--vv-shadow-card);
+    overflow: hidden;
+  }
+
+  /* --- Eingabe-Panel --------------------------------------------------- */
+  .panel {
+    padding: clamp(1.5rem, 3.2vw, 2.5rem);
+  }
+
+  .group {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .group + .group {
+    margin-top: 2.25rem;
+    padding-top: 2.25rem;
+    border-top: 2px solid var(--vv-haze);
+  }
+
+  .group__legend {
+    padding: 0;
+    margin-bottom: 1.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--vv-amber-deep);
+  }
+
+  /* --- Honorarmodell --------------------------------------------------- */
+  .fee {
+    margin-top: 1.55rem;
+    padding-top: 1.55rem;
+    border-top: 1px solid var(--vv-line-soft);
+  }
+
+  .fee__label {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--vv-ink);
+  }
+
+  .fee__options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+  }
+
+  .fee__option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.7rem 0.5rem;
+    border: 1px solid var(--vv-line);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 140ms ease, background 140ms ease;
+  }
+
+  .fee__option:hover {
+    border-color: var(--vv-ink-soft);
+  }
+
+  .fee__option.is-active {
+    border-color: var(--vv-amber);
+    background: var(--vv-amber-wash);
+  }
+
+  .fee__option:has(input:focus-visible) {
+    outline: 2px solid var(--vv-amber);
+    outline-offset: 2px;
+  }
+
+  .fee__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--vv-ink);
+  }
+
+  .fee__pct {
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--vv-text-muted);
+  }
+
+  .fee__option.is-active .fee__pct {
+    color: var(--vv-amber-deep);
+  }
+
+  .fee__detail {
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--vv-text-muted);
+  }
+
+  .fee__detail strong {
+    color: var(--vv-ink);
+    font-weight: 600;
+  }
+
+  /* --- Ergebnis-Panel -------------------------------------------------- */
+  .result {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(165deg, #26313f 0%, var(--vv-ink) 40%, #151c25 100%);
+    color: #fff;
+  }
+
+  .result__contour {
+    right: -230px;
+    bottom: -120px;
+    opacity: 0.14;
+  }
+
+  .result__inner {
+    position: relative;
+    padding: clamp(1.5rem, 3.2vw, 2.5rem);
+  }
+
+  .result__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .result__figure {
+    margin-top: 0.9rem;
+    font-family: var(--vv-serif);
+    font-size: clamp(2.9rem, 6vw, 4.1rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    color: var(--vv-amber);
+  }
+
+  .result__sub {
+    margin-top: 0.7rem;
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .breakdown {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .breakdown__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.42rem;
+    font-size: 0.86rem;
+  }
+
+  .breakdown__row dt {
+    color: rgba(255, 255, 255, 0.58);
+  }
+
+  .breakdown__row dd {
+    flex: none;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* --- Szenarien -------------------------------------------------------- */
+  .scenarios {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: start;
+    gap: 1rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .scenario__name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.48);
+  }
+
+  .scenario__figure {
+    margin-top: 0.45rem;
+    font-size: 1.42rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scenario__figure--negative {
+    color: #e58a6f;
+  }
+
+  .scenario__figure--positive {
+    color: #7fc8a3;
+  }
+
+  .scenario__desc {
+    margin-top: 0.45rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .scenarios__vs {
+    align-self: center;
+    padding: 0.15rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--vv-pill);
+    font-family: var(--vv-serif);
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* --- Fazit ------------------------------------------------------------ */
+  .verdict {
+    margin-top: 1.75rem;
+    padding: 1.35rem 1.4rem;
+    border: 1px solid rgba(230, 152, 17, 0.32);
+    border-radius: var(--vv-radius);
+    background: rgba(230, 152, 17, 0.08);
+  }
+
+  .verdict.is-negative {
+    border-color: rgba(229, 138, 111, 0.35);
+    background: rgba(181, 72, 47, 0.12);
+  }
+
+  .verdict__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--vv-amber-light);
+  }
+
+  .verdict.is-negative .verdict__label {
+    color: #e5a08f;
+  }
+
+  .verdict__figure {
+    margin-top: 0.55rem;
+    font-family: var(--vv-serif);
+    font-size: clamp(2.1rem, 4vw, 2.7rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+
+  .verdict__note {
+    margin-top: 0.75rem;
+    font-size: 0.83rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.66);
+  }
+
+  .result__cta {
+    margin-top: 1.6rem;
+    width: 100%;
+  }
+
+  .result__fineprint {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  @media (max-width: 940px) {
+    .calc__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 460px) {
+    .scenarios {
+      grid-template-columns: 1fr;
+    }
+
+    .scenarios__vs {
+      justify-self: start;
+    }
+
+    .fee__options {
+      grid-template-columns: 1fr;
+    }
+
+    .fee__option {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  import {
+    calculate,
+    euro,
+    plain,
+    months as fmtMonths,
+    daysDative as fmtDaysDat,
+    suggestedMonthlyValue,
+    IMPACT_FACTORS,
+    FEE_MODELS,
+  } from "../scripts/model";
+  import {
+    IMPACT_LABELS,
+    IMPACT_HINTS,
+    CRITICALITY_LABELS,
+    CRITICALITY_HINTS,
+    FOLLOWUP_LABELS,
+    FOLLOWUP_HINTS,
+  } from "../scripts/content";
+
+  const root = document.querySelector<HTMLElement>("[data-calculator]");
+  if (root) {
+    const $ = <T extends HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
+    const range = (id: string) => $<HTMLInputElement>(id);
+
+    const salary = range("salary");
+    const impact = range("impact");
+    const value = range("value");
+    const criticality = range("criticality");
+    const followup = range("followup");
+    const monthsSelf = range("monthsSelf");
+    const monthsAgency = range("monthsAgency");
+    const internal = range("internal");
+    const feeRadios = [...root.querySelectorAll<HTMLInputElement>('input[name="fee"]')];
+
+    const num = (el: HTMLInputElement) => Number.parseInt(el.value, 10);
+    const setText = (id: string, text: string) => {
+      $(id).textContent = text;
+    };
+
+    /* Die vorgeschlagene Wertschöpfung wird automatisch nachgeführt — es sei
+       denn, der Nutzer hat sie selbst angefasst. Ändert er danach das Gehalt,
+       gilt der Vorschlag wieder, weil die alte Zahl dann nicht mehr passt. */
+    let valueTouched = false;
+    value.addEventListener("input", () => {
+      valueTouched = true;
+    });
+
+    function refreshSuggestedValue() {
+      if (valueTouched) return;
+      value.value = String(suggestedMonthlyValue(num(salary), IMPACT_FACTORS[num(impact) - 1]));
+    }
+
+    salary.addEventListener("input", () => {
+      valueTouched = false;
+      refreshSuggestedValue();
+    });
+    impact.addEventListener("input", refreshSuggestedValue);
+
+    /* Eine Agentur, die genauso lange braucht, ist kein Vergleich — der
+       Agentur-Regler bleibt deshalb immer unter der Eigenregie-Dauer. */
+    function clampAgencyMonths() {
+      const max = Math.min(6, num(monthsSelf) - 1);
+      monthsAgency.max = String(max);
+      if (num(monthsAgency) > max) monthsAgency.value = String(max);
+    }
+    monthsSelf.addEventListener("input", clampAgencyMonths);
+
+    function feeIndex() {
+      return feeRadios.findIndex((el) => el.checked);
+    }
+
+    feeRadios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        feeRadios.forEach((el) =>
+          el.closest(".fee__option")!.classList.toggle("is-active", el.checked),
+        );
+        update();
+      });
+    });
+
+    function update() {
+      const impactIndex = num(impact) - 1;
+      const criticalityIndex = num(criticality) - 1;
+      const followupIndex = num(followup) - 1;
+      const selfMonths = num(monthsSelf);
+      const agencyMonths = num(monthsAgency);
+      const internalDays = num(internal);
+
+      const r = calculate({
+        salary: num(salary),
+        impactIndex,
+        monthlyValue: num(value),
+        criticalityIndex,
+        followupIndex,
+        monthsSelf: selfMonths,
+        monthsAgency: agencyMonths,
+        internalDaysPerMonth: internalDays,
+        feeIndex: feeIndex(),
+      });
+
+      /* --- Reglerbeschriftungen --- */
+      setText("salaryOut", euro(num(salary)));
+      setText("impactOut", IMPACT_LABELS[impactIndex]);
+      setText("impactHint", IMPACT_HINTS[impactIndex]);
+      setText("valueOut", `~ ${euro(num(value))}`);
+      setText("criticalityOut", CRITICALITY_LABELS[criticalityIndex]);
+      setText("criticalityHint", CRITICALITY_HINTS[criticalityIndex]);
+      setText("followupOut", FOLLOWUP_LABELS[followupIndex]);
+      setText("followupHint", FOLLOWUP_HINTS[followupIndex]);
+      setText("monthsSelfOut", fmtMonths(selfMonths));
+      setText("monthsAgencyOut", fmtMonths(agencyMonths));
+      setText(
+        "internalOut",
+        internalDays === 0
+          ? "kein interner Aufwand"
+          : `${internalDays} ${internalDays === 1 ? "Personentag" : "Personentage"} / Monat`,
+      );
+
+      const model = FEE_MODELS[feeIndex()];
+      $("feeDetail").innerHTML = `<strong>${model.tagline}.</strong> ${model.detail}`;
+
+      /* --- Kopfzahl und Aufschlüsselung --- */
+      setText("outTotal", euro(r.self.total));
+      setText("outPerDay", euro(r.weightedDailyValue));
+      setText("outDaily", euro(r.weightedDailyValue));
+      setText("outDays", plain(r.vacantDaysSelf));
+      setText("outFollowup", `+ ${euro(r.self.followupCost)}`);
+      setText("outInternal", `+ ${euro(r.self.internalCost)}`);
+
+      /* --- Szenarien --- */
+      setText("outSelf", `−${euro(r.self.total)}`);
+      setText(
+        "outSelfDesc",
+        `Suche in Eigenregie über ${fmtMonths(selfMonths)}. Die Stelle bleibt den gesamten Zeitraum unbesetzt.`,
+      );
+
+      setText("outAgency", `−${euro(r.agency.total)}`);
+      setText(
+        "outAgencyDesc",
+        `Besetzung nach ${fmtMonths(agencyMonths)}, inklusive Honorar von ${euro(r.fee)} und Einarbeitung — im selben Zeitfenster gerechnet.`,
+      );
+
+      /* --- Fazit --- */
+      const pays = r.advantage >= 0;
+      const verdict = $("verdict");
+      verdict.classList.toggle("is-negative", !pays);
+      setText(
+        "verdictLabel",
+        pays ? "Vorsprung durch schnellere Besetzung" : "Mehrkosten der schnelleren Besetzung",
+      );
+      setText("outAdvantage", euro(Math.abs(r.advantage)));
+
+      if (pays) {
+        setText(
+          "outVerdictNote",
+          `Das Honorar von ${euro(r.fee)} ist nach ${fmtDaysDat(r.breakEvenDays)} früherer Besetzung wieder eingespielt — ihr gewinnt ${fmtMonths(r.monthsSaved)}. Jeder investierte Euro kommt rechnerisch ${r.returnPerFeeEuro.toFixed(1).replace(".", ",")}-fach zurück.`,
+        );
+      } else {
+        setText(
+          "outVerdictNote",
+          `Bei dieser Konstellation trägt sich die schnellere Besetzung rechnerisch nicht: Das Honorar von ${euro(r.fee)} übersteigt den Wert der gewonnenen ${fmtMonths(r.monthsSaved)}. Sprecht mich trotzdem an — nicht jede Vakanz lässt sich in einer Tabelle abbilden.`,
+        );
+      }
+    }
+
+    [salary, impact, value, criticality, followup, monthsSelf, monthsAgency, internal].forEach(
+      (el) => el.addEventListener("input", update),
+    );
+
+    clampAgencyMonths();
+    update();
+  }
+</script>

@@ -1,0 +1,135 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  /** Startwert der Wertanzeige (wird clientseitig überschrieben). */
+  display: string;
+  hint: string;
+}
+
+const { id, label, min, max, step, value, display, hint } = Astro.props;
+---
+
+<div class="field">
+  <div class="field__head">
+    <label class="field__label" for={id}>{label}</label>
+    <output class="field__value" id={`${id}Out`} for={id}>{display}</output>
+  </div>
+
+  <input
+    class="field__range"
+    type="range"
+    id={id}
+    min={min}
+    max={max}
+    step={step}
+    value={value}
+    aria-describedby={`${id}Hint`}
+  />
+
+  <p class="field__hint" id={`${id}Hint`}>{hint}</p>
+</div>
+
+<style>
+  .field + :global(.field) {
+    margin-top: 1.55rem;
+    padding-top: 1.55rem;
+    border-top: 1px solid var(--vv-line-soft);
+  }
+
+  .field__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .field__label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--vv-ink);
+  }
+
+  .field__value {
+    flex: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--vv-amber-deep);
+  }
+
+  .field__hint {
+    margin-top: 0.55rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--vv-text-muted);
+    min-height: 2.4em;
+  }
+
+  /* --- Range ---------------------------------------------------------- */
+  .field__range {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin-top: 0.85rem;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .field__range::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--vv-line);
+  }
+
+  .field__range::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--vv-line);
+  }
+
+  .field__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    margin-top: -6.5px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--vv-ink);
+    box-shadow: 0 0 0 0 rgba(230, 152, 17, 0.28);
+    transition: background 140ms ease, box-shadow 140ms ease;
+  }
+
+  .field__range::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--vv-ink);
+    box-shadow: 0 0 0 0 rgba(230, 152, 17, 0.28);
+    transition: background 140ms ease, box-shadow 140ms ease;
+  }
+
+  .field__range:hover::-webkit-slider-thumb,
+  .field__range:focus-visible::-webkit-slider-thumb {
+    background: var(--vv-amber);
+    box-shadow: 0 0 0 6px rgba(230, 152, 17, 0.18);
+  }
+
+  .field__range:hover::-moz-range-thumb,
+  .field__range:focus-visible::-moz-range-thumb {
+    background: var(--vv-amber);
+    box-shadow: 0 0 0 6px rgba(230, 152, 17, 0.18);
+  }
+
+  .field__range:focus-visible {
+    outline: none;
+  }
+</style>
